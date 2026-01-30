@@ -1,0 +1,23 @@
+name: Auto Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 每天凌晨12点自动执行一次
+  workflow_dispatch: # 支持手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Sync Upstream
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_repository: 原作者名字/原仓库名字  # 这里一定要改成原作者的名称
+          target_branch: main                      # 你的分支名，通常是 main 或 master
+          upstream_branch: main                    # 原作者的分支名
