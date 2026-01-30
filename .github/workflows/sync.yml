@@ -1,17 +1,23 @@
-name: Sync to Upstream
+name: Auto Sync From Upstream
+
 on:
   schedule:
-    - cron: '0 10 * * *' # 每天北京时间18点自动检查更新
-  workflow_dispatch:      # 允许你手动点击运行
+    - cron: '0 0 * * *' # 每天凌晨自动执行
+  workflow_dispatch:      # 允许你在 Actions 页面手动点运行
+
 jobs:
-  update_external_repo:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Sync with upstream
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Sync Upstream
         uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
         with:
-          upstream_repository: suenway/danmu-api # 这里填原作者的仓库名，通常是这个
-          upstream_branch: main
-          target_branch: main
           target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_repository: huangxd-/danmu_api  # 原作者仓库
+          target_branch: main                      # 你的分支
+          upstream_branch: main                    # 原作者分支
